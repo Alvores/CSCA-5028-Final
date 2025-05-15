@@ -1,0 +1,36 @@
+# .github/workflows/ci.yml
+
+name: Python Application CI
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: [ "main" ] # Or your primary branch name, e.g., "master"
+  pull_request:
+    branches: [ "main" ] # Or your primary branch name
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"] # Test against multiple Python versions
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4 # Checks out your repository under $GITHUB_WORKSPACE
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip' # Cache pip dependencies
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        # If you have test-specific dependencies, you might have a requirements-dev.txt
+        # pip install -r requirements-dev.txt
+
